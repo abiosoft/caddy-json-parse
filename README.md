@@ -43,7 +43,8 @@ route {
 
           // if set to true, returns bad request for invalid json
           "strict": false 
-        }
+        },
+        ...
       ]
     },
   ...
