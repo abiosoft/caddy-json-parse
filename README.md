@@ -30,7 +30,7 @@ route {
 
 ### JSON
 
-`json_var` can be part of any route as an handler
+`json_vars` can be part of any route as an handler
 
 ```jsonc
 {
