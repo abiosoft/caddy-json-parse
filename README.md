@@ -39,7 +39,10 @@ route {
     {
       "handle": [
         {
-            "handler": "json_vars"
+          "handler": "json_vars",
+
+          // if set to true, returns bad request for invalid json
+          "strict": false 
         }
       ]
     },
