@@ -2,7 +2,6 @@ package jsonvars
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -87,13 +86,7 @@ func fetchValue(v interface{}, key string) interface{} {
 
 func newReplacerFunc(r *http.Request) (caddy.ReplacerFunc, error) {
 	var v interface{}
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		return nil, err
-	}
-	defer r.Body.Close()
-
-	err = json.Unmarshal(body, &v)
+	err := json.NewDecoder(r.Body).Decode(&v)
 	if err != nil {
 		return nil, err
 	}
