@@ -40,25 +40,25 @@ func (JSONVars) CaddyModule() caddy.ModuleInfo {
 }
 
 // Provision implements caddy.Provisioner.
-func (m *JSONVars) Provision(ctx caddy.Context) error {
-	m.log = ctx.Logger(m)
+func (j *JSONVars) Provision(ctx caddy.Context) error {
+	j.log = ctx.Logger(j)
 
-	if m.Strict == "strict" {
-		m.strict = true
+	if j.Strict == "strict" {
+		j.strict = true
 	}
 	return nil
 }
 
 // ServeHTTP implements caddyhttp.MiddlewareHandler.
-func (m JSONVars) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
+func (j JSONVars) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
 	repl := r.Context().Value(caddy.ReplacerCtxKey).(*caddy.Replacer)
 
 	replacerFunc, err := newReplacerFunc(r)
 	if err != nil {
-		if m.strict {
+		if j.strict {
 			return caddyhttp.Error(http.StatusBadRequest, err)
 		}
-		m.log.Debug("", zap.Error(err))
+		j.log.Debug("", zap.Error(err))
 	}
 
 	if err == nil {
@@ -69,11 +69,11 @@ func (m JSONVars) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyht
 }
 
 // UnmarshalCaddyfile implements caddyfile.Unmarshaler.
-func (m *JSONVars) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
+func (j *JSONVars) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	for d.Next() {
-		if d.Args(&m.Strict) {
-			if m.Strict != "strict" {
-				return d.Errf("unexpected token '%s'", m.Strict)
+		if d.Args(&j.Strict) {
+			if j.Strict != "strict" {
+				return d.Errf("unexpected token '%s'", j.Strict)
 			}
 		}
 	}

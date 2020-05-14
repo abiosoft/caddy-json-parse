@@ -92,7 +92,7 @@ func newReplacerFunc(r *http.Request) (caddy.ReplacerFunc, error) {
 	}
 
 	// prevent repetitive parsing. cache values
-	keys := map[string]interface{}{}
+	values := map[string]interface{}{}
 
 	return func(key string) (interface{}, bool) {
 		prefix := "json."
@@ -102,11 +102,14 @@ func newReplacerFunc(r *http.Request) (caddy.ReplacerFunc, error) {
 		key = strings.TrimPrefix(key, prefix)
 
 		// use cache if previously fetched
-		if val, ok := keys[key]; ok {
+		if val, ok := values[key]; ok {
 			return val, true
 		}
 
-		return fetchValue(v, key), true
+		val := fetchValue(v, key)
+		values[key] = val // cache
+
+		return val, true
 
 	}, nil
 }
