@@ -1,15 +1,15 @@
-# caddy-json-vars
+# caddy-json-parse
 Caddy v2 module for parsing json request body.
 
 ## Usage
 
-`json_vars` parses the request body as json for reference as [placeholders](https://caddyserver.com/docs/caddyfile/concepts#placeholders).
+`json_parse` parses the request body as json for reference as [placeholders](https://caddyserver.com/docs/caddyfile/concepts#placeholders).
 
 ### Caddyfile
 
 Simply use the directive anywhere in a route. If set, `strict` responds with bad request if the request body is an invalid json.
 ```
-json_vars [<strict>]
+json_parse [<strict>]
 ```
 
 And reference variables via `{json.*}` placeholders. Where `*` can get as deep as possible. e.g. `{json.items.0.label}`
@@ -23,14 +23,14 @@ Run a [command](https://github.com/abiosoft/caddy-exec) only if the github webho
     expression {json.ref}.endsWith('/master')
 }
 route {
-    json_vars # enable json parser
+    json_parse # enable json parser
     exec @webhook git pull origin master
 }
 ```
 
 ### JSON
 
-`json_vars` can be part of any route as an handler
+`json_parse` can be part of any route as an handler
 
 ```jsonc
 {
@@ -39,7 +39,7 @@ route {
     {
       "handle": [
         {
-          "handler": "json_vars",
+          "handler": "json_parse",
 
           // if set to true, returns bad request for invalid json
           "strict": false 

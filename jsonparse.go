@@ -1,4 +1,4 @@
-package jsonvars
+package jsonparse
 
 import (
 	"net/http"
@@ -12,19 +12,19 @@ import (
 
 // Interface guards
 var (
-	_ caddy.Provisioner           = (*JSONVars)(nil)
-	_ caddyhttp.MiddlewareHandler = (*JSONVars)(nil)
-	_ caddyfile.Unmarshaler       = (*JSONVars)(nil)
+	_ caddy.Provisioner           = (*JSONParse)(nil)
+	_ caddyhttp.MiddlewareHandler = (*JSONParse)(nil)
+	_ caddyfile.Unmarshaler       = (*JSONParse)(nil)
 )
 
 func init() {
-	caddy.RegisterModule(JSONVars{})
-	httpcaddyfile.RegisterHandlerDirective("json_vars", parseCaddyfile)
+	caddy.RegisterModule(JSONParse{})
+	httpcaddyfile.RegisterHandlerDirective("json_parse", parseCaddyfile)
 }
 
-// JSONVars implements an HTTP handler that parses
+// JSONParse implements an HTTP handler that parses
 // json body as placeholders.
-type JSONVars struct {
+type JSONParse struct {
 	Strict string `json:"strict,omitempty"`
 
 	strict bool
@@ -32,15 +32,15 @@ type JSONVars struct {
 }
 
 // CaddyModule returns the Caddy module information.
-func (JSONVars) CaddyModule() caddy.ModuleInfo {
+func (JSONParse) CaddyModule() caddy.ModuleInfo {
 	return caddy.ModuleInfo{
-		ID:  "http.handlers.json_vars",
-		New: func() caddy.Module { return new(JSONVars) },
+		ID:  "http.handlers.json_parse",
+		New: func() caddy.Module { return new(JSONParse) },
 	}
 }
 
 // Provision implements caddy.Provisioner.
-func (j *JSONVars) Provision(ctx caddy.Context) error {
+func (j *JSONParse) Provision(ctx caddy.Context) error {
 	j.log = ctx.Logger(j)
 
 	if j.Strict == "strict" {
@@ -50,7 +50,7 @@ func (j *JSONVars) Provision(ctx caddy.Context) error {
 }
 
 // ServeHTTP implements caddyhttp.MiddlewareHandler.
-func (j JSONVars) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
+func (j JSONParse) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyhttp.Handler) error {
 	repl := r.Context().Value(caddy.ReplacerCtxKey).(*caddy.Replacer)
 
 	replacerFunc, err := newReplacerFunc(r)
@@ -69,7 +69,7 @@ func (j JSONVars) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyht
 }
 
 // UnmarshalCaddyfile implements caddyfile.Unmarshaler.
-func (j *JSONVars) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
+func (j *JSONParse) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	for d.Next() {
 		if d.Args(&j.Strict) {
 			if j.Strict != "strict" {
@@ -82,7 +82,7 @@ func (j *JSONVars) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 
 // parseCaddyfile unmarshals tokens from h into a new Middleware.
 func parseCaddyfile(h httpcaddyfile.Helper) (caddyhttp.MiddlewareHandler, error) {
-	var m JSONVars
+	var m JSONParse
 	err := m.UnmarshalCaddyfile(h.Dispenser)
 	return m, err
 }

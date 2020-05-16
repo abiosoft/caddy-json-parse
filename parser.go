@@ -1,4 +1,4 @@
-package jsonvars
+package jsonparse
 
 import (
 	"encoding/json"

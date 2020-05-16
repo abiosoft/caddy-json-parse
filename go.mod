@@ -1,4 +1,4 @@
-module github.com/abiosoft/caddy-json-vars
+module github.com/abiosoft/caddy-json-parse
 
 go 1.14
 
