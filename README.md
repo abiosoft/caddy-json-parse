@@ -1,3 +1,5 @@
+![Go](https://github.com/abiosoft/caddy-json-parse/workflows/Go/badge.svg)
+
 # caddy-json-parse
 Caddy v2 module for parsing json request body.
 
