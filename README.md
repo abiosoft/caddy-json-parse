@@ -34,7 +34,7 @@ route {
 
 ```jsonc
 {
-...
+  ...
   "routes": [
     {
       "handle": [
