@@ -3,6 +3,14 @@
 # caddy-json-parse
 Caddy v2 module for parsing json request body.
 
+## Installation
+
+```
+xcaddy build v2.0.0 \
+    --with github.com/abiosoft/caddy-json-parse
+```
+
+
 ## Usage
 
 `json_parse` parses the request body as json for reference as [placeholders](https://caddyserver.com/docs/caddyfile/concepts#placeholders).
