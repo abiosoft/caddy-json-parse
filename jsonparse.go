@@ -25,9 +25,7 @@ func init() {
 // JSONParse implements an HTTP handler that parses
 // json body as placeholders.
 type JSONParse struct {
-	Strict string `json:"strict,omitempty"`
-
-	strict bool
+	Strict bool `json:"strict,omitempty"`
 	log    *zap.Logger
 }
 
@@ -43,9 +41,6 @@ func (JSONParse) CaddyModule() caddy.ModuleInfo {
 func (j *JSONParse) Provision(ctx caddy.Context) error {
 	j.log = ctx.Logger(j)
 
-	if j.Strict == "strict" {
-		j.strict = true
-	}
 	return nil
 }
 
@@ -55,7 +50,7 @@ func (j JSONParse) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyh
 
 	replacerFunc, err := newReplacerFunc(r)
 	if err != nil {
-		if j.strict {
+		if j.Strict {
 			return caddyhttp.Error(http.StatusBadRequest, err)
 		}
 		j.log.Debug("", zap.Error(err))
@@ -71,11 +66,11 @@ func (j JSONParse) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyh
 // UnmarshalCaddyfile implements caddyfile.Unmarshaler.
 func (j *JSONParse) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	for d.Next() {
-		if d.Args(&j.Strict) {
-			if j.Strict != "strict" {
-				return d.Errf("unexpected token '%s'", j.Strict)
-			}
+		strict := d.Val()
+		if strict != "strict" {
+			return d.Errf("unexpected token '%s'", strict)
 		}
+		j.Strict = true
 	}
 	return nil
 }
