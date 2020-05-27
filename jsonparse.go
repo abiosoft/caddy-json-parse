@@ -66,11 +66,17 @@ func (j JSONParse) ServeHTTP(w http.ResponseWriter, r *http.Request, next caddyh
 // UnmarshalCaddyfile implements caddyfile.Unmarshaler.
 func (j *JSONParse) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 	for d.Next() {
-		strict := d.Val()
-		if strict != "strict" {
-			return d.Errf("unexpected token '%s'", strict)
+		args := d.RemainingArgs()
+		switch len(args) {
+		case 0:
+		case 1:
+			if args[0] != "strict" {
+				return d.Errf("unexpected token '%s'", args[0])
+			}
+			j.Strict = true
+		default:
+			return d.ArgErr()
 		}
-		j.Strict = true
 	}
 	return nil
 }
